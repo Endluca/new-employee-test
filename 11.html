@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>51Talk企业文化知识竞赛</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .progress-container {
+            background: #f0f0f0;
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+
+        .option:hover {
+            background: #e3f2fd;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .option.selected .option-letter,
+        .option.correct .option-letter,
+        .option.incorrect .option-letter {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .explanation {
+            background: #f0f8ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 10px 10px 0;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .explanation-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .result-screen.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .final-score {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+        }
+
+        .performance-message {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .question-text {
+                font-size: 1.1em;
+            }
+            
+            .option {
+                font-size: 1em;
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="logo">51Talk</div>
+            <div class="subtitle">企业文化知识竞赛</div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">当前题目</div>
+                <div class="score-value" id="currentQuestion">1</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">总题数</div>
+                <div class="score-value">10</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">得分</div>
+                <div class="score-value" id="currentScore">0</div>
+            </div>
+        </div>
+
+        <div id="gameScreen">
+            <div class="question-card">
+                <div class="question-number" id="questionNumber">第1题</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="explanation" id="explanation">
+                    <div class="explanation-title">解析：</div>
+                    <div id="explanationText"></div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn" id="submitBtn" onclick="submitAnswer()" disabled>提交答案</button>
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">下一题</button>
+            </div>
+        </div>
+
+        <div id="resultScreen" class="result-screen">
+            <div class="logo">🎉 恭喜完成！</div>
+            <div class="final-score" id="finalScore">0/10</div>
+            <div class="performance-message" id="performanceMessage"></div>
+            <button class="btn restart-btn" onclick="restartGame()">重新开始</button>
+        </div>
+    </div>
+
+    <script>
+        // 题目数据
+        const questions = [
+            {
+                question: "51Talk创立初期的核心用户群体是？",
+                options: ["大学生", "K12学生", "职场白领", "退休人群"],
+                correct: 2,
+                explanation: "公司早期聚焦职场人士英语能力提升，后逐步扩展至全年龄段用户。"
+            },
+            {
+                question: "作为HR同事，在招聘面试中如何践行\"成就客户\"价值观？",
+                options: ["仅关注候选人学历背景", "主动了解用人部门需求，精准匹配人才", "统一使用标准化问题，避免个性化提问", "优先选择薪资要求低的候选人"],
+                correct: 1,
+                explanation: "内部部门（如用人团队）也是\"客户\"，需通过深度协作满足其需求。"
+            },
+            {
+                question: "国内运营中心需紧急修复课程预约系统故障，但技术资源已被大数据部占用。此时最符合\"团队协作\"的做法是？",
+                options: ["坚持要求大数据部立即移交技术资源，否则向上级投诉", "暂停所有运营工作，等待技术资源空闲", "联系大数据部负责人共同评估优先级，协商分时段共享资源", "自行联系外部供应商修复，避免内部沟通成本"],
+                correct: 2,
+                explanation: "体现主动沟通、共赢思维，符合\"团队协作\"价值观。"
+            },
+            {
+                question: "公司突然调整数据口径政策，作为大数据部员工，你应如何应对？",
+                options: ["抱怨政策变化影响原有工作流程", "主动学习新规范，协同相关部门优化数据模型", "等待领导明确指示后再行动", "建议暂停所有数据分析项目"],
+                correct: 1,
+                explanation: "\"拥抱变化\"要求积极适应并推动解决方案，而非被动等待。"
+            },
+            {
+                question: "以下哪种行为最可能获得\"组织部\"提名？",
+                options: ["独立完成个人KPI但拒绝分享经验", "协调市场部与产品部解决资源冲突", "严格按岗位说明书执行任务", "仅参与本部门内部培训"],
+                correct: 1,
+                explanation: "组织部注重领导力与跨部门协作能力，需超越岗位基础职责。"
+            },
+            {
+                question: "公司为员工提供的成长资源不包括？",
+                options: ["强制加班完成额外任务", "双通道晋升体系", "季度内部表彰", "不同成长期的培训"],
+                correct: 0,
+                explanation: "成长资源应正向赋能，非强制消耗性安排。"
+            },
+            {
+                question: "财务部需紧急处理一笔付款，但流程审批人正在休假，此时应？",
+                options: ["坚持等待审批人回归", "按\"团队协作\"价值观，联系备用审批人并报备", "自行垫付资金以避免延迟", "告知业务方无法处理"],
+                correct: 1,
+                explanation: "价值观需灵活应用于实际场景，平衡效率与风险控制。"
+            },
+            {
+                question: "以下哪项是大数据部践行\"科技+人文\"的典型做法？",
+                options: ["仅输出原始数据报表", "用可视化工具呈现用户学习行为，帮助培训部优化课程", "拒绝与其他部门共享数据", "优先开发高利润但用户体验差的功能"],
+                correct: 1,
+                explanation: "科技需服务于人的需求，数据价值在于驱动业务决策。"
+            },
+            {
+                question: "以下哪种行为不符合\"激情人生\"价值观？",
+                options: ["主动参与跨部门项目积累经验", "下班后拒绝任何与工作相关的学习", "利用公司资源考取专业认证", "为优化流程自发调研行业案例"],
+                correct: 1,
+                explanation: "激情体现为主动成长，而非被动完成任务。"
+            },
+            {
+                question: "发现同事行为与公司价值观冲突时，正确的处理方式是？",
+                options: ["私下指责同事", "在公开会议中直接批评", "基于事实沟通，并建议符合价值观的改进方案", "忽略问题以避免冲突"],
+                correct: 2,
+                explanation: "文化践行需通过建设性反馈，体现\"团队协作\"与\"成就客户\"。"
+            }
+        ];
+
+        // 游戏状态
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedOption = -1;
+        let answered = false;
+
+        // 初始化游戏
+        function initGame() {
+            console.log('初始化游戏开始');
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedOption = -1;
+            answered = false;
+            
+            const gameScreen = document.getElementById('gameScreen');
+            const resultScreen = document.getElementById('resultScreen');
+            
+            if (gameScreen) {
+                gameScreen.style.display = 'block';
+            }
+            if (resultScreen) {
+                resultScreen.classList.remove('show');
+            }
+            
+            updateProgress();
+            loadQuestion();
+            console.log('初始化游戏完成');
+        }
+
+        // 加载当前题目
+        function loadQuestion() {
+            console.log('加载题目:', currentQuestionIndex);
+            
+            if (currentQuestionIndex >= questions.length) {
+                console.error('题目索引超出范围');
+                return;
+            }
+            
+            const question = questions[currentQuestionIndex];
+            console.log('当前题目数据:', question);
+            
+            // 更新题目信息
+            const questionNumber = document.getElementById('questionNumber');
+            const currentQuestionEl = document.getElementById('currentQuestion');
+            const questionText = document.getElementById('questionText');
+            
+            if (questionNumber) {
+                questionNumber.textContent = `第${currentQuestionIndex + 1}题`;
+            }
+            if (currentQuestionEl) {
+                currentQuestionEl.textContent = currentQuestionIndex + 1;
+            }
+            if (questionText) {
+                questionText.textContent = question.question;
+                console.log('题目文本已设置:', question.question);
+            }
+            
+            // 生成选项
+            const optionsContainer = document.getElementById('optionsContainer');
+            if (optionsContainer) {
+                optionsContainer.innerHTML = '';
+                
+                question.options.forEach((option, index) => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'option';
+                    optionElement.onclick = () => selectOption(index);
+                    
+                    optionElement.innerHTML = `
+                        <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                        <div>${option}</div>
+                    `;
+                    
+                    optionsContainer.appendChild(optionElement);
+                });
+                console.log('选项已生成');
+            }
+            
+            // 重置状态
+            selectedOption = -1;
+            answered = false;
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const explanation = document.getElementById('explanation');
+            
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.display = 'inline-block'; // 🔥 关键修复：重新显示提交按钮
+            }
+            if (nextBtn) {
+                nextBtn.style.display = 'none';
+            }
+            if (explanation) {
+                explanation.classList.remove('show');
+            }
+        }
+
+        // 选择选项
+        function selectOption(index) {
+            if (answered) return;
+            
+            console.log('选择选项:', index);
+            
+            // 清除之前的选择
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // 选择当前选项
+            const options = document.querySelectorAll('.option');
+            if (options[index]) {
+                options[index].classList.add('selected');
+            }
+            
+            selectedOption = index;
+            
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+            }
+        }
+
+        // 提交答案
+        function submitAnswer() {
+            if (selectedOption === -1 || answered) return;
+            
+            console.log('提交答案:', selectedOption);
+            
+            answered = true;
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            // 显示正确答案
+            if (options[question.correct]) {
+                options[question.correct].classList.add('correct');
+            }
+            
+            // 如果选错了，标记错误选项
+            if (selectedOption !== question.correct) {
+                if (options[selectedOption]) {
+                    options[selectedOption].classList.add('incorrect');
+                }
+            } else {
+                // 答对了，增加分数
+                score++;
+                const currentScoreEl = document.getElementById('currentScore');
+                if (currentScoreEl) {
+                    currentScoreEl.textContent = score;
+                }
+            }
+            
+            // 显示解析
+            const explanationText = document.getElementById('explanationText');
+            const explanation = document.getElementById('explanation');
+            
+            if (explanationText) {
+                explanationText.textContent = question.explanation;
+            }
+            if (explanation) {
+                explanation.classList.add('show');
+            }
+            
+            // 更新按钮状态
+            const submitBtn = document.getElementById('submitBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (submitBtn) {
+                submitBtn.style.display = 'none';
+            }
+            if (nextBtn) {
+                nextBtn.style.display = 'inline-block';
+            }
+        }
+
+        // 下一题
+        function nextQuestion() {
+            console.log('下一题');
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex >= questions.length) {
+                // 游戏结束，显示结果
+                showResults();
+            } else {
+                // 加载下一题
+                updateProgress();
+                loadQuestion();
+            }
+        }
+
+        // 更新进度条
+        function updateProgress() {
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
+        }
+
+        // 显示结果
+        function showResults() {
+            console.log('显示结果');
+            
+            const gameScreen = document.getElementById('gameScreen');
+            const resultScreen = document.getElementById('resultScreen');
+            
+            if (gameScreen) {
+                gameScreen.style.display = 'none';
+            }
+            if (resultScreen) {
+                resultScreen.classList.add('show');
+            }
+            
+            // 更新最终分数
+            const finalScore = document.getElementById('finalScore');
+            if (finalScore) {
+                finalScore.textContent = `${score}/${questions.length}`;
+            }
+            
+            // 根据分数显示不同的评价
+            let message = '';
+            const percentage = (score / questions.length) * 100;
+            
+            if (percentage >= 90) {
+                message = '🏆 优秀！您对51Talk企业文化有深入的理解！';
+            } else if (percentage >= 70) {
+                message = '👍 良好！继续加油，进一步了解企业文化！';
+            } else if (percentage >= 60) {
+                message = '📚 及格！建议多了解公司的价值观和文化理念！';
+            } else {
+                message = '💪 需要努力！建议深入学习51Talk的企业文化！';
+            }
+            
+            const performanceMessage = document.getElementById('performanceMessage');
+            if (performanceMessage) {
+                performanceMessage.textContent = message;
+            }
+            
+            // 更新进度条到100%
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) {
+                progressBar.style.width = '100%';
+            }
+        }
+
+        // 重新开始游戏
+        function restartGame() {
+            console.log('重新开始游戏');
+            initGame();
+        }
+
+        // 确保DOM完全加载后再初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成，开始初始化游戏');
+            setTimeout(function() {
+                initGame();
+            }, 100);
+        });
+
+        // 备用初始化方法
+        window.addEventListener('load', function() {
+            console.log('页面完全加载完成');
+            if (document.getElementById('questionText').textContent === '') {
+                console.log('检测到题目未加载，重新初始化');
+                initGame();
+            }
+        });
+    </script>
+</body>
+</html>
